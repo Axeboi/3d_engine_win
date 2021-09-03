@@ -21,6 +21,7 @@ public:
     template <class U, uint Usize> friend Vector<U, Usize> operator- (const Vector<U, Usize>& lhs, const Vector<U, Usize>& rhs);
     template <class U, uint Usize> friend Vector<U, Usize> operator* (const Vector<U, Usize>& lhs, const Vector<U, Usize>& rhs);
     template <class U, uint Usize> friend Vector<U, Usize> operator* (const U& lhs, const Vector<U, Usize>& rhs);
+    T& operator[] (uint);
 
     void print() const;
 
@@ -64,37 +65,31 @@ public:
         return Vector<T, sz> { sz, result };
     }
 
-    T x() const
+    T x() const { return this->v_data[0]; }
+    T y() const { return this->v_data[1]; }
+    T z() const // Question: is it possible to constexpr this function to only exist for >= 3d?
     {
-        return this->v_data[0];
-    }
-
-    T y() const
-    {
-        return this->v_data[1];
-    }
-
-    T z() const
-    {
-        // verify z, if 2d
+        if (this->v_data.size() < 3)
+            throw std::out_of_range ("No z value in a 2d Vector");
         return this->v_data[2];
     }
 
-    T w() const
+    T w() const // Question: is it possible to constexpr this function to only exist for >= 4d?
     {
-        // verify w
+        if (this->v_data.size() < 4)
+            throw std::out_of_range ("No z value in a 2d Vector");
         return this->v_data[3];
     }
 
     void normalize()
     {
         uint dimensions = std::min((uint)3, sz);
-        T squared_sum = 0;
+        T squared_sum { 0 };
 
         for (uint i = 0; i < dimensions; i++)
             squared_sum += this->v_data[i] * this->v_data[i];
 
-        T magnitude = (T)std::sqrt(squared_sum);
+        T magnitude = (T) std::sqrt(squared_sum);
 
         for (uint i = 0; i < dimensions; i++)
         {
@@ -124,11 +119,9 @@ Vector<T, sz>::Vector (const std::array<T, sz> &other)
 
 ////////////////////////
 //
-// OPERATORS
+// OPERATOR OVERLOADING
 //
 ////////////////////////
-
-//ASSIGNMENT
 
 // ADDITION
 template <class T, uint sz>
@@ -161,7 +154,6 @@ Vector<T, sz> operator- (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 template <class T, uint sz>
 Vector<T, sz> operator* (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 {
-    // confirm they are the right size
     uint size = lhs.v_size;
     T result[size];
 
@@ -174,7 +166,6 @@ Vector<T, sz> operator* (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 template <class T, uint sz>
 Vector<T, sz> operator* (const T& value, const Vector<T, sz>& rhs)
 {
-    // confirm they are the right size
     uint size = rhs.v_size;
     T result[size];
 
@@ -183,6 +174,14 @@ Vector<T, sz> operator* (const T& value, const Vector<T, sz>& rhs)
 
     return Vector<T, sz> {size, result};
 }
+
+template <class T, uint size>
+T& Vector<T, size>::operator[] (uint index)
+{ 
+    if (this->v_data.size() < index )
+        throw std::out_of_range("Error: index is out of bounds");
+    return this->v_data[index];
+} 
 
 ////////////////////////
 //

@@ -3,22 +3,16 @@
 #include <vector>
 #include "vector.h"
 #include <iostream>
+#include <array>
 
 template<class T, uint R, uint C>
 class Matrix
 {
-  /////////////////////////
-  //
-  // Declarations
-  //
-  /////////////////////////
   public:
 
-  Matrix();
+  Matrix() = default;
   Matrix(const T *inputData);
-  Matrix(const Matrix<T, R, C> &inputMatrix);
-
-  ~Matrix();
+  Matrix(const Matrix<T, R, C> &inputMatrix) = default;
 
   // Overload +, - and * operator
   template <class U, uint E, uint D> friend Matrix<U, E, D> operator+ (const Matrix<U, E, D> &lhs, const Matrix<U, E, D> &rhs);
@@ -27,25 +21,51 @@ class Matrix
   template <class U, uint E, uint D> friend Matrix<U, E, D> operator* (const U& lhs, const Matrix<U, E, D> &rhs);
   template <class U, uint E, uint D, uint sz> friend Vector<U, sz> operator* (const Vector<U, sz> &lhs, const Matrix<U, E, D> &rhs);
   template <class U, uint E, uint D, uint sz> friend Matrix<U, E, D> operator* (const Matrix<U, E, D> &lhs, const Vector<U, sz> &rhs);
+  Vector<T, C>& operator[] (uint);
 
   void print();
 
   //private:
   uint m_rows;
   uint m_cols;
-  uint m_num_elements;
-  T* m_data;
+  std::array<T, R * C> m_data;
 
   private:
 
   static bool less_than_epsilon(T compare)
   {
-    return compare < 0.0001;
+    return (compare < 0.0001 && compare > -0.0001) ;
   }
 
 };
 
 
+///////////////////
+//
+// CONSTRUCTORS
+//
+///////////////////
+
+
+template <class T, uint R, uint C>
+Matrix<T, R, C>::Matrix(const T *inputData)
+{
+  m_rows = R;
+  m_cols = C;
+
+  for(uint i = 0; i < R * C; i++)
+  {
+    m_data[i] = inputData[i];
+  }
+}
+
+///////////////////
+//
+// OPERATOR OVERLOADING
+//
+///////////////////
+
+// ADDITION
 template <class U, uint R, uint C>
 Matrix<U, R, C> operator+ (const Matrix<U, R, C> &lhs, const Matrix<U, R, C> &rhs)
 {
@@ -59,9 +79,10 @@ Matrix<U, R, C> operator+ (const Matrix<U, R, C> &lhs, const Matrix<U, R, C> &rh
     }
   }
 
-  return Matrix<U, R, C> {4, 4, res};
+  return Matrix<U, R, C> {res};
 }
 
+// SUBTRACTION
 template <class U, uint R, uint C>
 Matrix<U, R, C> operator- (const Matrix<U, R, C> &lhs, const Matrix<U, R, C> &rhs)
 {
@@ -75,14 +96,10 @@ Matrix<U, R, C> operator- (const Matrix<U, R, C> &lhs, const Matrix<U, R, C> &rh
     }
   }
 
-  return Matrix<U, R, C> {4, 4, res};
+  return Matrix<U, R, C> {res};
 }
 
-///////////////////
-//
 // MULTIPLICATION
-//
-///////////////////
 template <typename U, uint rows, uint cols>
 Matrix<U, rows, cols> operator* (const Matrix<U, rows, cols> &lhs, const Matrix<U, rows, cols> &rhs)
 {
@@ -210,47 +227,7 @@ Matrix<T, rows, cols> operator* (const T &lhs, const Matrix<T, rows, cols> &rhs)
 // Implementations
 //
 /////////////////////////
-template <class T, uint R, uint C>
-Matrix<T, R, C>::Matrix()
-{
-  m_rows = R;
-  m_cols = C;
-  m_num_elements = R * C;
-  m_data = new T[m_num_elements];
 
-  for(uint i = 0; i < m_num_elements; i++)
-  {
-    m_data[i] = 0.0;
-  }
-}
-
-template <class T, uint R, uint C>
-Matrix<T, R, C>::Matrix(const T *inputData)
-{
-  m_rows = R;
-  m_cols = C;
-  m_num_elements = R * C;
-  m_data = new T[m_num_elements];
-
-  for(uint i = 0; i < m_num_elements; i++)
-  {
-    m_data[i] = inputData[i];
-  }
-}
-
-template <class T, uint R, uint C>
-Matrix<T, R, C>::Matrix(const Matrix<T, R, C> &other_matrix)
-{
-  m_rows = other_matrix.m_rows;
-  m_cols = other_matrix.m_cols;
-  m_num_elements = other_matrix.m_num_elements;
-  m_data = new T[m_num_elements];
-
-  for(uint i = 0; i < m_num_elements; i++)
-  {
-    m_data[i] = other_matrix.m_data[i];
-  }
-}
 
 template <class T, uint R, uint C>
 void Matrix<T, R, C>::print()
@@ -263,8 +240,3 @@ void Matrix<T, R, C>::print()
   }
 }
 
-template<class T, uint R, uint C>
-Matrix<T, R, C>::~Matrix()
-{
-  delete[] m_data;
-}

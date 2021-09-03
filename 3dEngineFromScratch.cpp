@@ -73,8 +73,8 @@ Triangle4 to_image_space(Triangle4 tri, const Vector4 camera)
         Matrix4x4 translate_camera{ translation };
         Matrix4x4 projection{ proj };
 
-        //new_tri.v.push_back(tri.v[i] * (translate_camera * (rotate_x * rotate_y)) * projection);
-        new_tri.v.push_back(tri.v[i] *  projection);
+        //new_tri[i] = (tri.v[i] * (translate_camera * (rotate_x * rotate_y)) * projection);
+        new_tri[i] = (tri[i] *  projection);
     }
    
     return new_tri;
@@ -83,10 +83,7 @@ Triangle4 to_image_space(Triangle4 tri, const Vector4 camera)
 class olcEngine3D : public olcConsoleGameEngine
 {
 public:
-    olcEngine3D()
-    {
-        m_sAppName = L"3D Render";
-    }
+    olcEngine3D() { m_sAppName = L"3D Render"; }
 
 private:
     Vector4 camera;
@@ -94,7 +91,7 @@ private:
 
     bool OnUserCreate() override
     {
-        camera = std::array{ 0.0, 0.0, -1.0, 1.0 };
+        camera = std::array<double, 4> { 0.0, 0.0, -1.0, 1.0 };
 
         mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}} });
         mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}} });
@@ -132,41 +129,29 @@ private:
         {
             for (Vector4& vec : triangle.v)
             {
-                //vec.print();
-                vec.v_data[0] += 1.0;
-                vec.v_data[1] += 1.0;
-                vec.v_data[2] += -10.0;
-                vec.v_data[3] += 5.0;
-                vec.v_data[0] *= (0.5 * (double)ScreenWidth());
-                vec.v_data[1] *= (0.5 * (double)ScreenHeight());
+                vec[0] += 1.0;
+                vec[1] += 1.0;
+                vec[2] += -10.0;
+                vec[3] += 5.0;
+                vec[0] *= (0.5 * (double)ScreenWidth());
+                vec[1] *= (0.5 * (double)ScreenHeight());
 
-                //vec.v_data[0] /= vec.v_data[3]; vec.v_data[1] /= vec.v_data[3]; vec.v_data[2] /= vec.v_data[3];
-                if (vec.v_data[3] > 0.0001 || vec.v_data[3] < -0.0001)
+                if (vec[3] > 0.0001 || vec[3] < -0.0001)
                 {
-                    //std::cout << vec.v_data[3] << " " << vec.v_data[0] << " " << vec.v_data[1] << std::endl;
-                    vec.v_data[0] /= vec.v_data[3]; vec.v_data[1] /= vec.v_data[3]; vec.v_data[2] /= vec.v_data[3];
+                    vec[0] /= vec[3]; vec[1] /= vec[3]; vec[2] /= vec[3];
                 }
-                    
             }
-
-            //triangle.print();
         }
 
         for (Triangle4 tri : transformed_mesh.tris)
         {
-            /*DrawLine(tri.v[0].x() / tri.v[0].w(), tri.v[1].y() / tri.v[1].w(), PIXEL_SOLID, FG_WHITE);
-            DrawLine(tri.v[1].x() / tri.v[1].w(), tri.v[2].y() / tri.v[2].w(), PIXEL_SOLID, FG_WHITE);
-            DrawLine(tri.v[2].x() / tri.v[2].w(), tri.v[0].y() / tri.v[0].w(), PIXEL_SOLID, FG_WHITE);*/
-            //tri.print();
-            DrawLine(tri.v[0].x(), tri.v[0].y(), tri.v[1].x(), tri.v[1].y(), PIXEL_SOLID, FG_WHITE);
-            DrawLine(tri.v[1].x(), tri.v[1].y(), tri.v[2].x(), tri.v[2].y(), PIXEL_SOLID, FG_WHITE);
-            DrawLine(tri.v[2].x(), tri.v[2].y(), tri.v[0].x(), tri.v[0].y(), PIXEL_SOLID, FG_WHITE);
+            DrawLine(tri[0].x(), tri[0].y(), tri[1].x(), tri[1].y(), PIXEL_SOLID, FG_WHITE);
+            DrawLine(tri[1].x(), tri[1].y(), tri[2].x(), tri[2].y(), PIXEL_SOLID, FG_WHITE);
+            DrawLine(tri[2].x(), tri[2].y(), tri[0].x(), tri[0].y(), PIXEL_SOLID, FG_WHITE);
         }
 
-        //DrawLine(40, 40, ScreenWidth() - 40, ScreenHeight() - 40, PIXEL_SOLID, FG_WHITE);
         return true;
     }
-
 };
 
 int main()
