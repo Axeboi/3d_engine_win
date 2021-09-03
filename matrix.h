@@ -16,7 +16,6 @@ class Matrix
 
   Matrix();
   Matrix(const T *inputData);
-  // Matrix(unsigned int rows, unsigned int columns, const std::vector<T> &inputData);
   Matrix(const Matrix<T, R, C> &inputMatrix);
 
   ~Matrix();
@@ -129,7 +128,7 @@ Vector<U, sz> operator* (const Vector<U, sz> &lhs, const Matrix<U, rows, cols> &
   // Algorithm for square 3x3 and 4x4 matrices, at least
   
   // Init
-  double result[cols];
+  std::array<U, cols> result;
   for(int i = 0; i < cols; i++)
   {
     result[i] = 0;

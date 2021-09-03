@@ -83,7 +83,8 @@ Triangle4 to_image_space(Triangle4 tri, const Vector4 camera)
 class olcEngine3D : public olcConsoleGameEngine
 {
 public:
-    olcEngine3D() {
+    olcEngine3D()
+    {
         m_sAppName = L"3D Render";
     }
 
@@ -93,25 +94,25 @@ private:
 
     bool OnUserCreate() override
     {
-        camera = std::vector<double>{ 0.0, 0.0, -1.0, 1.0 };
+        camera = std::array{ 0.0, 0.0, -1.0, 1.0 };
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 0.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}} });
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 0.0f, 0.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {1.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 0.0f, 1.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 0.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {1.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 0.0f, 1.0f, 1.0f}} });
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 1.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 0.0f, 1.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 1.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 0.0f, 1.0f, 1.0f}} });
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}} });
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 1.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 1.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 1.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {0.0f, 1.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 1.0f, 0.0f, 1.0f}} });
 
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}} });
-        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::vector<double> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::vector<double> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::vector<double> {1.0f, 0.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}} });
+        mesh_cube.tris.push_back(Triangle4{ Vector4 { std::array<double, 4> {1.0f, 0.0f, 1.0f, 1.0f}}, Vector4 { std::array<double, 4> {0.0f, 0.0f, 0.0f, 1.0f}}, Vector4 { std::array<double, 4> {1.0f, 0.0f, 0.0f, 1.0f}} });
 
         return true;
     }

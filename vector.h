@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <array>
 #include <algorithm>
 
 typedef unsigned int uint;
@@ -11,29 +12,13 @@ template <class T, uint sz>
 class Vector
 {
 public:
-    Vector();
-    Vector(T* input);
-    Vector(Vector<T, sz>& input);
-    Vector(std::vector<T>&& input);
+    Vector<T, sz> () = default;
+    Vector<T, sz> (const std::array<T, sz> &other);
 
-    Vector(const Vector<T, sz>& other)
-    {
-        v_size = other.v_size;
-        v_data = new T[v_size];
-        for (uint i{ 0 }; i < v_size; ++i)
-            v_data[i] = other.v_data[i];
-    }
-
-    ~Vector();
-
-    Vector<T, sz> operator= (const Vector<T, sz>& other); //Copy assignment
-    Vector<T, sz> operator= (Vector<T, sz>&& other); // Move assignment
-
+    Vector<T, sz> &operator= (const Vector<T, sz> &) = default;
 
     template <class U, uint Usize> friend Vector<U, Usize> operator+ (const Vector<U, Usize>& lhs, const Vector<U, Usize>& rhs);
-
     template <class U, uint Usize> friend Vector<U, Usize> operator- (const Vector<U, Usize>& lhs, const Vector<U, Usize>& rhs);
-
     template <class U, uint Usize> friend Vector<U, Usize> operator* (const Vector<U, Usize>& lhs, const Vector<U, Usize>& rhs);
     template <class U, uint Usize> friend Vector<U, Usize> operator* (const U& lhs, const Vector<U, Usize>& rhs);
 
@@ -41,7 +26,7 @@ public:
 
     T getLength()
     {
-        uint dimensions = std::min((uint)3, this->v_size);
+        uint dimensions = std::min((uint)3, sz);
         T squared_sum = 0;
 
         for (uint i = 0; i < dimensions; i++)
@@ -52,7 +37,7 @@ public:
 
     Vector<T, sz> getDirection()
     {
-        uint dimensions = std::min((uint)3, this->v_size);
+        uint dimensions = std::min((uint)3, sz);
         T squared_sum = 0;
 
         for (uint i = 0; i < dimensions; i++)
@@ -68,15 +53,15 @@ public:
         }
 
         // If vector is 4d, we don't want to use w to change direction
-        if (dimensions < this->v_size)
+        if (dimensions < sz)
         {
-            for (uint i = dimensions - 1; i < this->v_size; i++)
+            for (uint i = dimensions - 1; i < sz; i++)
             {
                 result[i] = this->v_data[i];
             }
         }
 
-        return Vector<T, sz> { this->v_size, result };
+        return Vector<T, sz> { sz, result };
     }
 
     T x() const
@@ -103,7 +88,7 @@ public:
 
     void normalize()
     {
-        uint dimensions = std::min((uint)3, this->v_size);
+        uint dimensions = std::min((uint)3, sz);
         T squared_sum = 0;
 
         for (uint i = 0; i < dimensions; i++)
@@ -122,9 +107,20 @@ public:
     static Vector<T, sz> cross(const Vector<T, sz>& a, const Vector<T, sz>& b);
 
     // Class members
-    uint v_size;
-    T* v_data;
+    std::array<T, sz> v_data;
 };
+
+////////////////////////
+//
+// CONSTRUCTORS
+//
+////////////////////////
+
+template <typename T, uint sz>
+Vector<T, sz>::Vector (const std::array<T, sz> &other)
+{
+    v_data = other;
+}
 
 ////////////////////////
 //
@@ -132,6 +128,7 @@ public:
 //
 ////////////////////////
 
+//ASSIGNMENT
 
 // ADDITION
 template <class T, uint sz>
@@ -232,91 +229,18 @@ Vector<T, sz> Vector<T, sz>::cross(const Vector<T, sz>& a, const Vector<T, sz>& 
         }
     }
     // TODO: should add remaining dimensions also
-    return Vector<T, sz> {a.v_size, cross_product };
+    return Vector<T, sz> { cross_product };
 }
 
-template <class T, uint sz>
-Vector<T, sz>::Vector()
-{
-    v_size = 1;
-    T* v_data = nullptr;
-}
 
-template<class T, uint size>
-Vector<T, size>::Vector(T* input)
-{
-    v_size = size;
-    v_data = new T[size];
-
-    for (uint i = 0; i < size; i++)
-        v_data[i] = input[i];
-}
-
-template<class T, uint sz>
-Vector<T, sz>::Vector(std::vector<T>&& input)
-{
-    v_size = sz;
-    v_data = new T[sz];
-
-    for (uint i = 0; i < sz; i++)
-        v_data[i] = input[i];
-}
-
-template<class T, uint size>
-Vector<T, size>::Vector(Vector<T, size>& input)
-{
-    v_size = size;
-    v_data = new T[size];
-
-    for (uint i = 0; i < size; i++)
-        v_data[i] = input.v_data[i];
-}
-
-template<class T, uint size>
-Vector<T, size>::~Vector()
-{
-    delete[] v_data;
-}
 
 template <class T, uint size>
 void Vector<T, size>::print() const
 {
-    for (uint i = 0; i < v_size; i++)
+    for (uint i = 0; i < size; i++)
         std::cout << v_data[i] << ' ';
 
     std::cout << std::endl;
-}
-
-
-template <class T, uint sz>
-Vector<T, sz> Vector<T, sz>::operator= (const Vector<T, sz>& other)
-{
-    // self-assignment check
-    if (this == &other)
-        return *this;
-
-    // if data exists in the current string, delete it
-    if (this->v_size) delete[] this->v_data;
-
-    // copy the data from str to the implicit object
-    this->v_data = new T[sz];
-
-    for (int i{ 0 }; i < sz; i++)
-        this->v_data[i] = other.v_data[i];
-
-    // return the existing object so we can chain this operator
-    return *this;
-};
-
-template <class T, uint sz>
-Vector<T, sz> Vector<T, sz>::operator= (Vector<T, sz>&& other)
-{
-    //std::swap(v_size, other.v_size);
-    T* temp = other.v_data;
-    v_data = other.v_data;
-    other.v_data = v_data;
-    return *this;
-    //std::swap(&v_data, &other.v_data);
 }
 
 #endif
