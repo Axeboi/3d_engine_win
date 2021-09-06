@@ -70,7 +70,7 @@ template <class U, uint R, uint C>
 Matrix<U, R, C> operator+ (const Matrix<U, R, C> &lhs, const Matrix<U, R, C> &rhs)
 {
   // Test if size of matrices are compatible for addition
-  U res[lhs.m_rows * lhs.m_cols];
+  U res[R * C];
   for(int i = 0; i < 4; i++)
   {
     for(int j = 0; j < 4; j++)
@@ -134,7 +134,7 @@ Matrix<U, rows, cols> operator* (const Matrix<U, rows, cols> &lhs, const Matrix<
 
   for (uint i = 0; i < rows * cols; i++)
   {
-    if (result[i] < 0.0000001 && result[i] > -0.0000001) { result[i] = 0; };
+    if (result[i] < 0.00001 && result[i] > -0.00001) { result[i] = 0; };
   }
   return Matrix<U, rows, cols> {result};
 }

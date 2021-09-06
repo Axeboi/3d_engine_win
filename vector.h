@@ -38,6 +38,7 @@ public:
 
     Vector<T, sz> getDirection()
     {
+        // TOOD: should be same function as getDirection() so could be extracted 
         uint dimensions = std::min((uint)3, sz);
         T squared_sum = 0;
 
@@ -46,7 +47,7 @@ public:
 
         T magnitude = (T)std::sqrt(squared_sum);
 
-        T result[dimensions];
+        std::array<T, sz> result;
         for (uint i = 0; i < dimensions; i++)
         {
             T temp = this->v_data[i] / magnitude;
@@ -56,13 +57,13 @@ public:
         // If vector is 4d, we don't want to use w to change direction
         if (dimensions < sz)
         {
-            for (uint i = dimensions - 1; i < sz; i++)
+            for (uint i = dimensions; i < sz; i++)
             {
                 result[i] = this->v_data[i];
             }
         }
 
-        return Vector<T, sz> { sz, result };
+        return Vector<T, sz> { result };
     }
 
     T x() const { return this->v_data[0]; }
@@ -83,6 +84,7 @@ public:
 
     void normalize()
     {
+        // TOOD: should be same function as getDirection() so could be extracted 
         uint dimensions = std::min((uint)3, sz);
         T squared_sum { 0 };
 
@@ -98,8 +100,9 @@ public:
         }
     }
 
+    uint size() const { return sz; };
     static T dot(const Vector<T, sz>& lhs, const Vector<T, sz>& rhs);
-    static Vector<T, sz> cross(const Vector<T, sz>& a, const Vector<T, sz>& b);
+    static Vector<T, sz> cross(Vector<T, sz>& a, Vector<T, sz>& b);
 
     // Class members
     std::array<T, sz> v_data;
@@ -127,52 +130,48 @@ Vector<T, sz>::Vector (const std::array<T, sz> &other)
 template <class T, uint sz>
 Vector<T, sz> operator+ (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 {
-    uint size = lhs.v_size;
-    T result[size];
+    std::array<T, sz> result;
 
-    for (uint i = 0; i < size; i++)
+    for (uint i = 0; i < sz; i++)
     {
         result[i] = lhs.v_data[i] + rhs.v_data[i];
     }
-    return Vector<T, sz> {size, result};
+    return Vector<T, sz> { result };
 }
 
 // SUBTRACTION
 template <class T, uint sz>
 Vector<T, sz> operator- (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 {
-    uint size = lhs.v_size;
-    T result[size];
+    std::array<T, sz> result;
 
-    for (uint i = 0; i < size; i++)
+    for (uint i = 0; i < sz; i++)
         result[i] = lhs.v_data[i] - rhs.v_data[i];
 
-    return Vector<T, sz> {size, result};
+    return Vector<T, sz> { result};
 }
 
 // MULTIPLICATION
 template <class T, uint sz>
 Vector<T, sz> operator* (const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 {
-    uint size = lhs.v_size;
-    T result[size];
+    std::array<T, sz> result;
 
-    for (uint i = 0; i < size; i++)
+    for (uint i = 0; i < sz; i++)
         result[i] = lhs.v_data[i] * rhs.v_data[i];
 
-    return Vector<T, sz> {size, result};
+    return Vector<T, sz> { result};
 }
 
 template <class T, uint sz>
 Vector<T, sz> operator* (const T& value, const Vector<T, sz>& rhs)
 {
-    uint size = rhs.v_size;
-    T result[size];
+    std::array<T, sz> result;
 
-    for (uint i = 0; i < size; i++)
+    for (uint i = 0; i < sz; i++)
         result[i] = value * rhs.v_data[i];
 
-    return Vector<T, sz> {size, result};
+    return Vector<T, sz> { result};
 }
 
 template <class T, uint size>
@@ -194,8 +193,8 @@ T& Vector<T, size>::operator[] (uint index)
 template <class T, uint sz>
 T Vector<T, sz>::dot(const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 {
-    uint size = lhs.v_size;
-    T sum;
+    uint size = lhs.size();
+    T sum { 0.0 };
 
     for (uint i = 0; i < size; i++)
         sum += lhs.v_data[i] * rhs.v_data[i];
@@ -204,30 +203,27 @@ T Vector<T, sz>::dot(const Vector<T, sz>& lhs, const Vector<T, sz>& rhs)
 }
 
 template <class T, uint sz>
-Vector<T, sz> Vector<T, sz>::cross(const Vector<T, sz>& a, const Vector<T, sz>& b)
+Vector<T, sz> Vector<T, sz>::cross(Vector<T, sz>& a, Vector<T, sz>& b)
 {
-    if (a.v_size < 3 && b.v_size < 3)
+    if (a.size() < 3 && b.size() < 3)
         throw std::invalid_argument("Vectors must be the same size");
-
-    uint length = 3;
-    // TODO: ensure x,y,z components, i.e. at least 3 elements in vector
 
     // a2b3−a3b2,a3b1−a1b3,a1b2−a2b1
     T x = (a.v_data[1] * b.v_data[2]) - (a.v_data[2] * b.v_data[1]);
     T y = (a.v_data[2] * b.v_data[0]) - (a.v_data[0] * b.v_data[2]);
     T z = (a.v_data[0] * b.v_data[1]) - (a.v_data[1] * b.v_data[0]);
 
-    T cross_product[length];
-    for (uint i = 0; i < length; i++)
+    std::array<T, sz> cross_product;
+    for (uint i = 0; i < sz; i++)
     {
         switch (i)
         {
         case 0: cross_product[i] = x; break;
-        case 1: cross_product[i] = y; break;
+        case 1: cross_product[i] = y; break; //(std::abs(y) > 0.000001) ? y : 0.0; break;
         case 2: cross_product[i] = z; break;
+        default: cross_product[i] = a[i]; //Add w component if it exist. Arbitrary, though.
         }
     }
-    // TODO: should add remaining dimensions also
     return Vector<T, sz> { cross_product };
 }
 
@@ -236,7 +232,7 @@ Vector<T, sz> Vector<T, sz>::cross(const Vector<T, sz>& a, const Vector<T, sz>& 
 template <class T, uint size>
 void Vector<T, size>::print() const
 {
-    for (uint i = 0; i < size; i++)
+    for (uint i = 0; i < size(); i++)
         std::cout << v_data[i] << ' ';
 
     std::cout << std::endl;

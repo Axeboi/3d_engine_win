@@ -18,15 +18,6 @@ struct Triangle
     {
         for(uint i {0}; i < v.size(); i++)
             v[i] = other.v[i];
-        //std::copy(v.begin(), v.end(), other.v.begin());
-        // for (Vector<double, 4> el : other.v)
-        // {
-        //     v.push_back(el);
-        // }
-    }
-    Triangle(Triangle<T>&& other)
-    {
-       std::swap(v, other.v);
     }
 
     Triangle(T p1, T p2, T p3)
@@ -57,14 +48,15 @@ struct Triangle
         return *this;
     }
 
-
-    // ~Triangle()
-    // {
-    //     v.clear();
-    // }
-
     void print();
+    Vector<double, 4> normal();
+
+    // Member variables
     std::array<T, 3> v;
+
+    //Color values for 
+    wchar_t sym = 0;
+    short col = 0;
 };
 
 template<class T>
@@ -82,6 +74,21 @@ void Triangle<T>::print()
         std::cout << vec.v_data[0] << " " << vec.v_data[1] << " " << vec.v_data[2] << " " << vec.v_data[3] << std::endl;
     }
 }
+
+template <class T>
+Vector<double, 4> Triangle<T>::normal()
+{   
+    T a = (v[1] - v[0]);
+    T b = (v[2] - v[0]);
+    a.normalize();
+    b.normalize();
+
+    return T::cross(a, b);
+
+    // TODO WRITE TEST FOR THIS POTENTIAL MISERY
+}
+
+
 
 
 #endif
