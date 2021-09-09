@@ -1,8 +1,10 @@
+#define OLC_PGE_APPLICATION
+
 #include <tuple>
 #include <functional>
 #include <iostream>
 
-#include "olc/olcPixelGameEngine.h"
+#include "olcPixelGameEngine.h"
 
 const int SCREEN_WIDTH = 320;
 const int SCREEN_HEIGHT = 240;
@@ -65,7 +67,7 @@ void drawTriangle(const auto &engine, Point3d input_p1, Point3d input_p2, Point3
       if (w0 >= 0 && w1 >= 0 && w2 >= 0)
       {
         //renderPixel(p, w0, w1, w2);
-        engine.draw(p.x, p.y, olc::Pixel(100, 100, 100, 0));
+        engine.Draw(p.x, p.y, olc::Pixel(100, 100, 100, 0));
       }
     }
   }
@@ -105,6 +107,7 @@ public:
 		// for (int x = 0; x < ScreenWidth(); x++)
 		// 	for (int y = 0; y < ScreenHeight(); y++)
 		// 		Draw(x, y, olc::Pixel(rand() % 255, rand() % 255, rand()% 255));
+    drawTriangle(const auto this, Point3d a, Point3d b, Point3d c);
 		return true;
 	}
 
