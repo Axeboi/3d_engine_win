@@ -5,146 +5,143 @@
 #include <iostream>
 
 #include "olc/olcPixelGameEngine.h"
+#include "renderEngine.h"
 
-//const int SCREEN_WIDTH = 320;
-//const int SCREEN_HEIGHT = 240;
+// struct Point2d
+// {
+// 	int x, y;
 
+// 	void print() { std::cout << x << " " << y << std::endl; };
+// };
 
-struct Point2d
-{
-	int x, y;
+// struct Point3d
+// {
+// 	float x, y, z;
+// };
 
-	void print() { std::cout << x << " " << y << std::endl; };
-};
+// int orient2d(const Point2d& a, const Point2d& b, const Point2d& c)
+// {
+// 	int ret = ((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x));
+// 	return ret;
+// }
 
-struct Point3d
-{
-	float x, y, z;
-};
+// class Engine;
+// //void drawTriangle(const Engine*, Point3d, Point3d, Point3d);
 
-int orient2d(const Point2d& a, const Point2d& b, const Point2d& c)
-{
-	int ret = ((b.x - a.x) * (c.y - a.y)) - ((b.y - a.y) * (c.x - a.x));
-	return ret;
-}
-
-class Engine;
-//void drawTriangle(const Engine*, Point3d, Point3d, Point3d);
-
-int min3(int a, int b, int c) { return std::min(std::min(a, b), c); };
-int max3(int a, int b, int c) { return std::max(std::max(a, b), c); };
+// int min3(int a, int b, int c) { return std::min(std::min(a, b), c); };
+// int max3(int a, int b, int c) { return std::max(std::max(a, b), c); };
 
 
-class Engine : public olc::PixelGameEngine
-{
-public:
-	Engine()
-	{
-		sAppName = "3d engine";
-	}
+// class Engine : public olc::PixelGameEngine
+// {
+// public:
+// 	Engine()
+// 	{
+// 		sAppName = "3d engine";
+// 	}
 
-public:
-	bool OnUserCreate() override
-	{
-		// Counter clockwise triangle
-		/*p0.x = -0.5;
-		p0.y = -0.5;
+// public:
+// 	bool OnUserCreate() override
+// 	{
+// 		// Counter clockwise triangle
+// 		/*p0.x = -0.5;
+// 		p0.y = -0.5;
 
-		p1.x = 0.5;
-		p1.y = -0.5;
+// 		p1.x = 0.5;
+// 		p1.y = -0.5;
 
-		p2.x = 0.25;
-		p2.y = 0.0;*/
+// 		p2.x = 0.25;
+// 		p2.y = 0.0;*/
 
-		p0.x = -0.5;
-		p0.y = -0.5;
+// 		p0.x = -0.5;
+// 		p0.y = -0.5;
 
-		p2.x = 0.0;
-		p2.y = 0.5;
+// 		p2.x = 0.0;
+// 		p2.y = 0.5;
 
-		p1.x = 0.5;
-		p1.y = -0.5;
+// 		p1.x = 0.5;
+// 		p1.y = -0.5;
 
 		
 
-		return true;
-	}
+// 		return true;
+// 	}
 
-	bool OnUserUpdate(float fElapsedTime) override
-	{
-		drawTriangle(p0, p1, p2);
-		return true;
-	}
+// 	bool OnUserUpdate(float fElapsedTime) override
+// 	{
+// 		drawTriangle(p0, p1, p2);
+// 		return true;
+// 	}
 
-	void drawTriangle(Point3d input_p1, Point3d input_p2, Point3d input_p3)
-	{
-		// convert from image space (-1 to 1 x, -1 to 1 y) to screen space
-		// (coordinate + 1)* (0.5 * screenspace)
-		Point2d a, b, c;
+// 	void drawTriangle(Point3d input_p1, Point3d input_p2, Point3d input_p3)
+// 	{
+// 		// convert from image space (-1 to 1 x, -1 to 1 y) to screen space
+// 		// (coordinate + 1)* (0.5 * screenspace)
+// 		Point2d a, b, c;
 
-		/*a.x = input_p1.x;
-		a.y = input_p1.y;
+// 		/*a.x = input_p1.x;
+// 		a.y = input_p1.y;
 
-		b.x = input_p2.x;
-		b.y = input_p2.y;
+// 		b.x = input_p2.x;
+// 		b.y = input_p2.y;
 
-		c.x = input_p3.x;
-		c.y = input_p3.y;*/
-		a.x = (input_p1.x + 1) * (0.5 * (ScreenWidth()-1) );
-		a.y = (input_p1.y + 1) * (0.5 * (ScreenHeight() -1));
+// 		c.x = input_p3.x;
+// 		c.y = input_p3.y;*/
+// 		a.x = (input_p1.x + 1) * (0.5 * (ScreenWidth()-1) );
+// 		a.y = (input_p1.y + 1) * (0.5 * (ScreenHeight() -1));
 
-		b.x = (input_p2.x + 1) * (0.5 * (ScreenWidth() -1));
-		b.y = (input_p2.y + 1) * (0.5 * (ScreenHeight() -1));
+// 		b.x = (input_p2.x + 1) * (0.5 * (ScreenWidth() -1));
+// 		b.y = (input_p2.y + 1) * (0.5 * (ScreenHeight() -1));
 
-		c.x = (input_p3.x + 1) * (0.5 * (ScreenWidth() -1));
-		c.y = (input_p3.y + 1) * (0.5 * (ScreenHeight() -1));
+// 		c.x = (input_p3.x + 1) * (0.5 * (ScreenWidth() -1));
+// 		c.y = (input_p3.y + 1) * (0.5 * (ScreenHeight() -1));
 
-		// AABB for triangle
-		int minX = min3(a.x, b.x, c.x);
-		int minY = min3(a.y, b.y, c.y);
-		int maxX = max3(a.x, b.x, c.x);
-		int maxY = max3(a.y, b.y, c.y);
+// 		// AABB for triangle
+// 		int minX = min3(a.x, b.x, c.x);
+// 		int minY = min3(a.y, b.y, c.y);
+// 		int maxX = max3(a.x, b.x, c.x);
+// 		int maxY = max3(a.y, b.y, c.y);
 
-		// Clip agains screen boundries
-		minX = std::max(minX, 0);
-		minY = std::max(minY, 0);
-		maxX = std::min(maxX, ScreenHeight() - 1);
-		maxY = std::min(maxY, ScreenWidth() - 1);
+// 		// Clip agains screen boundries
+// 		minX = std::max(minX, 0);
+// 		minY = std::max(minY, 0);
+// 		maxX = std::min(maxX, ScreenHeight() - 1);
+// 		maxY = std::min(maxY, ScreenWidth() - 1);
 
-		Point2d p;
-		for (p.y = minY; p.y < maxY; p.y++)
-		{
-			for (p.x = minX; p.x < maxX; p.x++)
-			{
-				int w0 = orient2d(b, c, p);
-				int w1 = orient2d(c, a, p);
-				int w2 = orient2d(a, b, p);
-				if (w0 >= 0 && w1 >= 0 && w2 >= 0)
-				{
-					//renderPixel(p, w0, w1, w2);
+// 		Point2d p;
+// 		for (p.y = minY; p.y < maxY; p.y++)
+// 		{
+// 			for (p.x = minX; p.x < maxX; p.x++)
+// 			{
+// 				int w0 = orient2d(b, c, p);
+// 				int w1 = orient2d(c, a, p);
+// 				int w2 = orient2d(a, b, p);
+// 				if (w0 >= 0 && w1 >= 0 && w2 >= 0)
+// 				{
+// 					//renderPixel(p, w0, w1, w2);
 					
-					float fw0 = (float) w0 / (float) (w0 + w1 + w2);
-					float fw1 = (float) w1 / (float) ((w0 + w1 + w2));
-					float fw2 = (float) w2 / (float) ((w0 + w1 + w2));
+// 					float fw0 = (float) w0 / (float) (w0 + w1 + w2);
+// 					float fw1 = (float) w1 / (float) ((w0 + w1 + w2));
+// 					float fw2 = (float) w2 / (float) ((w0 + w1 + w2));
 
-					float red = fw0*255;
-					float green = fw1 * 255;
-					float blue = fw2 * 255;
+// 					float red = fw0*255;
+// 					float green = fw1 * 255;
+// 					float blue = fw2 * 255;
 					
-					//Draw(p.x, p.y, olc::Pixel(100, 100, 100, 0));
-					this->Draw(p.x, p.y, olc::Pixel(red, green, blue, 255));
-				}
-			}
-		}
+// 					//Draw(p.x, p.y, olc::Pixel(100, 100, 100, 0));
+// 					this->Draw(p.x, p.y, olc::Pixel(red, green, blue, 255));
+// 				}
+// 			}
+// 		}
 
-		// a.print();
-		// b.print();
-		// c.print();
-		// std::cout << minX << " " << minY << " " << maxX << " " << maxY << std::endl;
-	}
+// 		// a.print();
+// 		// b.print();
+// 		// c.print();
+// 		// std::cout << minX << " " << minY << " " << maxX << " " << maxY << std::endl;
+// 	}
 
-	Point3d p0, p1, p2;
-};
+// 	Point3d p0, p1, p2;
+// };
 
 
 
@@ -156,7 +153,7 @@ public:
 
 int main()
 {
-	Engine demo;
+	RenderEngine demo;
 	if (demo.Construct(640, 480, 1, 1))
 		demo.Start();
 
